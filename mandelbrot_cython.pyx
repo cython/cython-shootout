@@ -9,8 +9,7 @@ import sys
 def main(int size, outfile=sys.stdout):
     cdef int iter = 50
     cdef double step = 2.0 / size
-    cdef double Cx, Cy, Zx, Zy, abs2
-    cdef double Zx2, Zy2
+    cdef double Cx, Cy, Zx, Zy
     cdef int i, xi, yi
     cdef double square_abs
     
@@ -27,14 +26,14 @@ def main(int size, outfile=sys.stdout):
         for xi in range(size):
             Zx = Cx = step*xi - 1.5
             Zy = Cy = step*yi - 1.0
-            i = 0
+            i = iter
             while True:
-                # Z = Z^2 + C
                 # Soon (hopefully) Cython will have native c complex types
+                # Z = Z^2 + C
                 Zx, Zy = Zx*Zx - Zy*Zy + Cx , 2*Zx*Zy + Cy
                 square_abs = Zx*Zx + Zy*Zy
-                i += 1
-                if (i > iter) | (square_abs > 4.0):
+                i -= 1
+                if (i == 0) | (square_abs > 4.0):
                     break
                     
             byte_acc = (byte_acc << 1) | (square_abs < 4.0)
