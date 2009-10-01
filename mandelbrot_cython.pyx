@@ -3,6 +3,7 @@
 #
 # contributed by Robert Bradshaw
 
+# Doesn't quite match the test output. Numerical noise? 
 
 import sys    
 
@@ -47,5 +48,12 @@ def main(int size, outfile=sys.stdout):
         write(line)
 
 
-#main()
-
+if __name__ == '__main__':
+    n = 16000
+    out = sys.stdout
+    try:
+        n = int(sys.argv[1])
+        file = open(sys.argv[2])
+    except IndexError:
+        pass
+    main(n, out)

@@ -77,5 +77,10 @@ def pidigits(unsigned int n):
         print "%s%s\t:%s" % (line[:m+1], ' ' * (10-m), n)
 
 
-def main():
-  pidigits(1000)
+if __name__ == '__main__':
+    import sys
+    try:
+        n = int(sys.argv[1])
+    except IndexError:
+        n = 2500
+    pidigits(n)

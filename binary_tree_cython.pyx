@@ -23,8 +23,7 @@ cdef long check_tree(Node t):
     else:
         return t.item + check_tree(t.left) - check_tree(t.right)
 
-
-def test(int n):
+def main(int n):
 
     # By definition, trees can't have cycles. However, Python's garbage
     # collector will do lots of wasteful tree traversals to try to collect 
@@ -56,3 +55,7 @@ def test(int n):
         iterations /= 4
 
     print "long lived tree of depth %d\t check:" % max_depth, check_tree(long_lived_tree)
+
+if __name__ == '__main__':
+    import sys
+    main(int(sys.argv[1]))

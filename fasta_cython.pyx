@@ -97,14 +97,17 @@ def randomFasta(table, int n):
             buf[i] = cchars[k]
         print line[:n % width]
 
+if __name__ == '__main__':
+    try:
+        n = int(sys.argv[1])
+    except IndexError:
+        n = 25000000
 
-n = 100 #int(sys.argv[1])
+    print '>ONE Homo sapiens alu'
+    repeatFasta(alu, n*2)
 
-print '>ONE Homo sapiens alu'
-repeatFasta(alu, n*2)
+    print '>TWO IUB ambiguity codes'
+    randomFasta(iub, n*3)
 
-print '>TWO IUB ambiguity codes'
-randomFasta(iub, n*3)
-
-print '>THREE Homo sapiens frequency'
-randomFasta(homosapiens, n*5)
+    print '>THREE Homo sapiens frequency'
+    randomFasta(homosapiens, n*5)

@@ -139,12 +139,16 @@ cdef Planet neptune = Planet(
     5.15138902046611451e-05 * solar_mass)
 
 
-def main(n=50000000):
-    if n is None:
-        n = int(sys.argv[1])
+cdef main(n):
     cdef Planet* bodies = [sun, jupiter, saturn, uranus, neptune]
     offset_momentum(bodies)
     print "%.9f" % energy(bodies)
     advance(bodies, 0.01, n)
     print "%.9f" % energy(bodies)
 
+if __name__ == '__main__':
+    try:
+        n = int(sys.argv[1])
+    except IndexError:
+        n = 50000000
+    main(n)
