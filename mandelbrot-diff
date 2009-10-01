@@ -1,0 +1,3 @@
+hexdump -C mandelbrot-output.txt > mandelbrot-output.dump
+hexdump -C mandelbrot.out > mandelbrot.dump
+diff mandelbrot-output.dump mandelbrot.dump
