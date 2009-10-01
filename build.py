@@ -39,7 +39,6 @@ makefile.write("""
 all: %(all)s
 
 clean:
-\t@echo Cleaning Demos/embed
 \t@rm -f *~ *.o *.so core core.* *.c %(all)s
 
 """ % {'all': ' '.join(all)})
