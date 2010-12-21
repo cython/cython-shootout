@@ -94,6 +94,7 @@ cdef unsigned long long pieces[10][50][12]
 cdef int piece_counts[10][50]
 cdef char next_cell[10][50][12]
 
+
 # Returns the direction rotated 60 degrees clockwise
 cdef char rotate(char dir):
     return (dir + 2) % PIVOT
@@ -331,7 +332,7 @@ cdef void calc_six_rotations(char piece, char index):
     cdef char minimum, first_empty
     cdef unsigned long long piece_mask
 
-    for rotation in range(5):
+    for rotation in range(6):
         if piece != 3 or rotation < 3:
             calc_cell_indices(cell, piece, index)
             if cells_fit_on_board(cell, piece) and not has_island(cell, piece):
@@ -362,6 +363,7 @@ cdef unsigned long long TRIPLE_MASK = 0x7FFF
 cdef char all_rows[32]
 
 # We need a better way to do this...
+# range?
 for i,v in enumerate([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]):
      all_rows[i] = v
 
@@ -536,18 +538,14 @@ cdef int solution_sort(void *elem1, void *elem2):
     return char1[i] - char2[i]
 
 
-def my_printf(*args):
-     pass
-
 # pretty print a board in the specified hexagonal format
-cdef void pretty(signed char *b):
+cdef bint pretty(signed char *b) except -1:
     cdef int i
     for i in range(0, 50, 10):
-          pass
-#      my_printf("%c %c %c %c %c \n %c %c %c %c %c \n", b[i]+'0', b[i+1]+'0',
-#            b[i+2]+'0', b[i+3]+'0', b[i+4]+'0', b[i+5]+'0', b[i+6]+'0',
-#            b[i+7]+'0', b[i+8]+'0', b[i+9]+'0')
-    printf("\n")
+        print (' '.join([str(c) for c in b[i:i+5]]) +
+                ' \n ' +
+                ' '.join([str(c) for c in b[i+5:i+10]]))
+    print
 
 if __name__ == '__main__':
     from sys import argv
@@ -555,6 +553,23 @@ if __name__ == '__main__':
         max_solutions = int(argv[1])
     calc_pieces()
     calc_rows()
+    
+    if 0:
+        print "pieces"
+        for i in range(10):
+            for j in range(50):
+                print i, j, ' '.join([hex(pieces[i][j][k])[2:-1] for k in range(12)])
+
+        print "piece_counts"
+        for i in range(10):
+            print [piece_counts[i][j] for j in range(50)]
+
+        print "next_cell"
+        for i in range(10):
+            for j in range(50):
+                print [next_cell[i][j][k] for k in range(12)]
+
+    
     solve(0, 0)
     printf("%d solutions found\n\n", solution_count)
     qsort(solutions, solution_count, 50 * sizeof(signed char), solution_sort)
