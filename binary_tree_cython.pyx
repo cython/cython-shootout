@@ -1,35 +1,39 @@
-cdef extern from "binary_tree_cython.h":
-    object PY_NEW(object, args)
-    void disable_gc(object)
+from libc.stdlib cimport malloc, free
 
-cdef class Node:
-    cdef Node left
-    cdef Node right
-    cdef long item
+cdef struct Node:
+    Node *left
+    Node *right
+    int item
 
-cdef Node make_tree(long item, long depth):
-    cdef Node t = <Node>PY_NEW(Node, ())
+cdef Node *make_tree(int item, int depth):
+    cdef Node *t = <Node*>malloc(sizeof(Node))
     t.item = item
     if depth:
         depth -= 1
         item <<= 1
         t.left = make_tree(item - 1, depth)
         t.right = make_tree(item, depth)
+    else:
+        t.left = NULL
+        t.right = NULL
     return t
 
-cdef long check_tree(Node t):
-    if t.left is None:
-        return t.item
+cdef int check_tree(Node* t):
+    cdef int tmp
+    if t.left:
+        tmp = t.item + check_tree(t.left) - check_tree(t.right)
     else:
-        return t.item + check_tree(t.left) - check_tree(t.right)
+        tmp = t.item
+    free(t)
+    return tmp
 
 def main(int n):
 
     # By definition, trees can't have cycles. However, Python's garbage
     # collector will do lots of wasteful tree traversals to try to collect 
     # circular references. Normal reference counting still happens. 
-    import gc
-    gc.disable()
+    #import gc
+    #gc.disable()
 
     cdef int min_depth, max_depth, stretch_depth, depth
     min_depth = 4
@@ -37,7 +41,7 @@ def main(int n):
     stretch_depth = max_depth + 1
     
     cdef int i, iterations
-    cdef long check
+    cdef int check
 
     print "stretch tree of depth %d\t check:" % stretch_depth, check_tree(make_tree(0, stretch_depth))
 
@@ -52,7 +56,7 @@ def main(int n):
             check += check_tree(make_tree(-i, depth))
 
         print "%d\t trees of depth %d\t check:" % (iterations * 2, depth), check
-        iterations /= 4
+        iterations >>= 2
 
     print "long lived tree of depth %d\t check:" % max_depth, check_tree(long_lived_tree)
 
